@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>canvas demo</title>
+        <style>
+            body{
+                margin:0;
+                padding:0;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="app"></canvas>
+        <script>
+            const canvas = document.getElementById('app');
+            const ctx = canvas.getContext('2d');
+            canvas.width = document.documentElement.clientWidth;//或者window.innerWidth、window.innerHeight
+            canvas.height = document.documentElement.clientHeight;
+            const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+            grad.addColorStop(0, '#000');
+            grad.addColorStop(1, 'blue');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for(let i = 0; i < 200; i++){
+                let r = Math.random() * 5 + 5;
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height * 0.65;
+                let a = Math.random() * 360;
+                drawStar(ctx, x, y, r, a);
+            }
+
+            function drawStar(ctx, x, y, R, rot){
+                ctx.beginPath();
+                for(let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((18 + i * 72 - rot) / 180 * Math.PI) * R + x, -Math.sin((18 + i * 72 - rot) / 180 * Math.PI) * R + y);
+                    ctx.lineTo(Math.cos((54 + i * 72 - rot) / 180 * Math.PI) * R * 0.5 + x, -Math.sin((54 + i * 72 - rot) / 180 * Math.PI) * R * 0.5 + y)
+                }
+                ctx.closePath();
+                ctx.fillStyle = '#fff';
+                ctx.lineWidth = 1;
+
+                ctx.fill();
+                ctx.stroke();
+            }
+        </script>
+    </body>
+</html>

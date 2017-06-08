@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+  <style>
+    button{
+        padding: 0 auto;
+        font-family:"Arial","Tahoma","微软雅黑","雅黑";
+        vertical-align:middle;
+        margin:8px;
+        line-height:18px;
+        font-size:18px;
+    }
+  </style>
+</head>
+<body>
+    <button onclick='cl()'>清除画布</button>
+    <canvas id="draw" width="800" height="800"></canvas>
+<script>
+    const canvas = document.querySelector('#draw');
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 10;
+
+    let isDrawing = false;
+    let X = 0;
+    let Y = 0;
+    let hue = 0;
+    let direction = true;
+
+    function draw(e) {
+        if(!isDrawing) return;
+        console.log(e);
+        if(e.type == "mousemove"){
+            X = e.offsetX;
+            Y = e.offsetY;
+        } else  {
+//          处理触摸屏操作
+            X = e.changedTouches[0].clientX;
+            Y = e.changedTouches[0].clientY;
+//          console.log(e);
+        }
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+        ctx.beginPath();
+        ctx.moveTo(X, Y);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+
+        hue++;
+        if(hue >= 360) {
+            hue =0;
+        }
+        if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+            direction = !direction;
+        }
+        if(direction) {
+            ctx.lineWidth++;
+        } else {
+            ctx.lineWidth--;
+        }
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        [X, Y] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    //清除画布
+    function cl() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+</script>
+
+<style>
+  html, body {
+    margin:0;
+  }
+</style>
+
+</body>
+</html>
